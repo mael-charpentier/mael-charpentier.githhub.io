@@ -1,0 +1,204 @@
+---
+layout: default
+title: TimeLine - Maël Charpentier
+socialActivate: true
+---
+<link href="../assets/css/timeline.css" rel="stylesheet" />
+
+<style>
+    #chart {
+        /*max-width: 650px;*/
+        margin: 35px auto;
+    }
+</style>
+
+<script>
+    window.Promise ||
+        document.write(
+            '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
+        )
+    window.Promise ||
+        document.write(
+            '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
+        )
+    window.Promise ||
+        document.write(
+            '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
+        )
+</script>
+
+<script src="../assets/js/apexcharts.js"></script>
+
+<script>
+    // Replace Math.random() with a pseudo-random number generator to get reproducible results in e2e tests
+    // Based on https://gist.github.com/blixt/f17b47c62508be59987b
+    var _seed = 42;
+    Math.random = function () {
+        _seed = _seed * 16807 % 2147483647;
+        return (_seed - 1) / 2147483646;
+    };
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+
+<div id="chart"></div>
+
+
+
+
+<script>
+    var data_post = [ {{ content }} ];
+
+    var options = {
+        series: generate_data_chart(data_post),
+        chart: {
+            width: '100%',
+            height: 'auto',
+            type: 'rangeBar',
+            events: {
+                click: function (event, chartContext, config) {
+                    if (config.seriesIndex != -1 && config.dataPointIndex != -1) {
+                        let data = config.config.series[config.seriesIndex].data[config.dataPointIndex];
+                        window.location = data.url;
+                    }
+                },
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opt) {
+                let data = opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex];
+                return data.title;
+            }
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'light',
+                type: 'vertical',
+                shadeIntensity: 0.25,
+                gradientToColors: undefined,
+                inverseColors: true,
+                opacityFrom: 1,
+                opacityTo: 1,
+                stops: [50, 0, 100, 100]
+            }
+        },
+        xaxis: {
+            type: 'datetime'
+        },
+        legend: {
+            position: 'top',
+            show: false,
+        },
+        tooltip: {
+            enabled: true,
+            custom: function (w) {
+                let dataPointIndex = w.dataPointIndex;
+                let seriesIndex = w.seriesIndex;
+                let data = w.w.config.series[seriesIndex].data[dataPointIndex];
+                let date = [transform_date(data.y[0]), transform_date(data.y[1])];
+                let textDate = '<span class="value start-value">'+date[0]+'</span> ';
+                if (date[0]!=date[1]){
+                    textDate +='<span class="separator">-</span> <span class="value end-value">'+date[1]+'</span>';
+                }
+                return (
+                    '<div class="apexcharts-tooltip-rangebar">'+
+                        '<div>'+
+                            '<span class="series-name" style="color: #FEB019"></span>'+
+                        '</div>'+
+                        '<div>'+
+                            '<span class="category">'+data.title+': </span> '+textDate+
+                        '</div>'+
+                    '</div>'
+                );
+
+                function transform_date(date){
+                    let array = new Date(date).toDateString().split(' ');
+                    return array[2]+'-'+array[1];
+                }
+            },
+        },
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+
+
+    function generate_data_chart(dict_data) {
+        let maxIndexData = max(dict_data);
+        let data_chart = []
+        for (let i = 0; i < maxIndexData; i++) {
+            let temp_data = []
+            dict_data.forEach(array => {
+                let t = get_data(array, i);
+                if (t) {
+                    t.forEach(tt => {
+                        temp_data.push(tt);
+                    });
+                }
+            });
+            data_chart.push({
+                data: temp_data
+            })
+        }
+        console.log(data_chart);
+
+        return data_chart;
+
+        function get_data(array, index) {
+            if (index < array.length) {
+                let element = array[index];
+                let temp = [];
+                let template = JSON.stringify({
+                    x: element.type,
+                    y: [],
+                    title: element.title,
+                    url: 'https://' + window.location.host + element.url,
+                });
+                let dates = element.date.split(',');
+                dates.forEach(date => {
+                    let t = JSON.parse(template);
+                    let dates = date.split(';');
+                    let plus = 0;
+
+                    let timeDate = dates[0];
+                    t.y.push(getTimeDate(timeDate));
+
+                    timeDate = dates[dates.length - 1];
+                    if (dates.length != 2) {
+                        plus = 86400000 - 1;
+                    }
+                    t.y.push(getTimeDate(timeDate) + plus);
+
+                    temp.push(t);
+
+                    function getTimeDate(date) {
+                        if (date == 'present') {
+                            return new Date().getTime();
+                        } else {
+                            return new Date(date).getTime()+14400000;
+                        }
+                    }
+                });
+                return temp;
+            }
+            return null
+        }
+
+        function max(array) {
+            let max = 0;
+            array.forEach(subArray => {
+                if (subArray.length > max) {
+                    max = subArray.length;
+                }
+            });
+            return max
+        }
+    }
+</script>

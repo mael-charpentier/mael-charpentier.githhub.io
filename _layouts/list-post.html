@@ -1,0 +1,27 @@
+---
+layout: default
+---
+<section class="cards" id="{{ page.id }}">
+<h2 class="cards-title">{{ page.section }}</h2>
+<div class="cards-container">
+    <!-- This loops through the paginated posts  limit: 6 -->
+    {% for post in site.categories[page.id] %}
+        <div class="card-container card">
+            {% if post.image %}
+                <img
+                src="{{ post.image }}"
+                alt="{{ post.imageAlt }}"
+                title="{{ post.imageAlt }}"
+                loading="lazy"
+                class="card-pic"
+                />
+            {% endif %}
+            <h3 class="card-title">{{ post.title }}</h3>
+            <p class="card-details">
+                {{ post.excerpt }}
+            </p>
+            <a href="{{ post.url }}" class="card-link">Plus d'info</a>
+        </div>
+    {% endfor %}
+</div>
+</section>
