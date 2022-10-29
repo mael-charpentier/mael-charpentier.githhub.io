@@ -1,0 +1,18 @@
+---
+layout: timeline
+---
+
+{% assign sections = "experience,projects,education,prix" | split: ',' %}
+{% for index in (0..3) %}
+        {% assign nameSection = sections[index] %}
+        [
+        {% for post in site.categories[nameSection] %}
+          {
+            type: '{{ nameSection }}',
+            date: '{{ post.datePost }}',
+            title: '{{ post.title }}',
+            url: '{{ post.url }}',
+          },
+        {% endfor %}
+        ],
+{% endfor %}
