@@ -1,0 +1,25 @@
+---
+layout: default
+title: Projects - Maël Charpentier
+socialActivate: true
+---
+<!-- Skills section -->
+<section class="skills" id="skills">
+  <h2 class="skill-header">Les langages que je connais :</h2>
+
+  <div class="skills-wrapper">
+        {% for image in site.static_files %}
+            {% if image.path contains "/assets/images/skills/" %}
+            {% assign name = image.path | split: '.' %}
+            {% assign lang = name[0] | split: '-' | shift | join: ' '  %}
+                <img
+                  src="{{ site.url }}{{ image.path }}"
+                  alt="{{ lang }}"
+                  title="{{ lang }}"
+                  loading="lazy"
+                  class="icon icon-card"
+                />
+            {% endif %}
+        {% endfor %}
+  </div>
+</section>
