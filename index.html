@@ -1,0 +1,67 @@
+---
+layout: default
+title: Portfolio - Maël Charpentier
+socialActivate: true
+---
+    <!-- More about -->
+    <section class="about" id="about">
+      <h2>Plus à propos de moi :</h2>
+      <p>
+        Je suis étudiant à l'Université de Montréal (UdeM), au Baccalauréat de mathématiques et informatique, en 2e année.<br>
+        J'ai <span id="age"></span> ans, je suis citoyen Français et j'ai le statu de résident permanent au Canada.<br>
+        J'aime beaucoup voyager et les mangas.<br>
+        <a href="{{ site.url }}/assets/doc/CV_VF_Mael.pdf">Mon CV (version française)</a><br>
+        <a href="{{ site.url }}/assets/doc/CV_EV_Mael.pdf">My CV (english version)</a>
+      </p>
+    </section>
+
+    <!-- Skills section -->
+    <section class="skills" id="skills">
+      <h2 class="skill-header">Top Skills</h2>
+
+      <div class="skills-wrapper">
+            {% for image in site.static_files %}
+                {% if image.path contains "/assets/images/skills_best/" %}
+                    {% assign name = image.path | split: '.' %}
+                    {% assign lang = name[0] | split: '-' | shift | join: ' '  %}
+                        <img
+                        src="{{ site.url }}{{ image.path }}"
+                        alt="{{ lang }}"
+                        title="{{ lang }}"
+                        loading="lazy"
+                        class="icon icon-card"
+                        />
+                {% endif %}
+            {% endfor %}
+      </div>
+    </section>
+    {% assign sections = "experience,projects,education,prix" | split: ',' %}
+    {% assign sectionsText = "Mes expériences récentes,Mes projets personnels récents,Éducation,Mes prix récents" | split: ',' %}
+    {% for index in (0..3) %}
+        <!-- {{ sections[index] }} section -->
+        <section class="cards" id="{{ sections[index] }}">
+        <h2 class="cards-title">{{ sectionsText[index] }}</h2>
+        <div class="cards-container">
+            {% assign nameSection = sections[index] %}
+            <!-- This loops through the paginated posts -->
+            {% for post in site.categories[nameSection]  limit: 3 %}
+                <div class="card-container card">
+                    {% if post.image %}
+                        <img
+                        src="{{ post.image }}"
+                        alt="{{ post.imageAlt }}"
+                        title="{{ post.imageAlt }}"
+                        loading="lazy"
+                        class="card-pic"
+                        />
+                    {% endif %}
+                    <h3 class="card-title">{{ post.title }}</h3>
+                    <p class="card-details">
+                        {{ post.excerpt }}
+                    </p>
+                    <a href="{{ post.url }}" class="card-link">Plus d'info</a>
+                </div>
+            {% endfor %}
+        </div>
+        </section>
+    {% endfor %}
