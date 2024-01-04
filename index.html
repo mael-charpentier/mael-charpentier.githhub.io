@@ -5,11 +5,11 @@ socialActivate: true
 ---
     <!-- More about -->
     <section class="about" id="about">
-      <h2>Plus à propos de moi :</h2>
+      <h2>More about me :</h2>
       <p>
-        Je suis étudiant à l'Université de Montréal (UdeM), au Baccalauréat de mathématiques et informatique, en 3e année.<br>
-        J'ai <span id="age"></span> ans, je suis citoyen Français et j'ai le statu de résident permanent au Canada.<br>
-        J'aime beaucoup voyager, les mangas et l'informatique.<br>
+        I'm a student at the Université de Montréal (UdeM), in my 3rd year of the Bachelor of Mathematics and Computer Science program.<br>
+        I am <span id="age"></span> years old, I am a French citizen with permanent resident status in Canada..<br>
+        I love traveling, manga and computer science.<br>
         <a href="{{ site.url }}/assets/doc/CV_VF_Mael.pdf">Mon CV (version française)</a><br>
         <a href="{{ site.url }}/assets/doc/CV_EV_Mael.pdf">My CV (english version)</a>
       </p>
@@ -35,8 +35,8 @@ socialActivate: true
             {% endfor %}
       </div>
     </section>
-    {% assign sections = "experience,projects,education,prix" | split: ',' %}
-    {% assign sectionsText = "Mes expériences récentes,Mes projets personnels récents,Éducation,Mes prix récents" | split: ',' %}
+    {% assign sections = "experience,projects,education,awards" | split: ',' %}
+    {% assign sectionsText = "My recent experiences,My recent personal projects,Education,My recents awards" | split: ',' %}
     {% for index in (0..3) %}
         <!-- {{ sections[index] }} section -->
         <section class="cards" id="{{ sections[index] }}">
@@ -59,7 +59,7 @@ socialActivate: true
                     <p class="card-details">
                         {{ post.excerpt }}
                     </p>
-                    <a href="{{ post.url }}" class="card-link">Plus d'info</a>
+                    <a href="{{ post.url }}" class="card-link">More info</a>
                 </div>
             {% endfor %}
         </div>
